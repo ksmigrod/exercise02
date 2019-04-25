@@ -101,7 +101,39 @@ public class DepartmentResourceIT {
         Assert.assertThat(actual, Matchers.containsInAnyOrder(expected.toArray(new DepartmentTO[]{})));
     }
 
-    private List expectedResult() {
+    private List<DepartmentTO> expectedResultWithoutCounts() {
+        List<DepartmentTO> result = new ArrayList<>();
+        result.add(new DepartmentTO(10, "Administration"));
+        result.add(new DepartmentTO(20, "Marketing"));
+        result.add(new DepartmentTO(30, "Purchasing"));
+        result.add(new DepartmentTO(40, "Human Resources"));
+        result.add(new DepartmentTO(50, "Shipping"));
+        result.add(new DepartmentTO(60, "IT"));
+        result.add(new DepartmentTO(70, "Public Relations"));
+        result.add(new DepartmentTO(80, "Sales"));
+        result.add(new DepartmentTO(90, "Executive"));
+        result.add(new DepartmentTO(100, "Finance"));
+        result.add(new DepartmentTO(110, "Accounting"));
+        result.add(new DepartmentTO(120, "Treasury"));
+        result.add(new DepartmentTO(130, "Corporate Tax"));
+        result.add(new DepartmentTO(140, "Control And Credit"));
+        result.add(new DepartmentTO(150, "Shareholder Services"));
+        result.add(new DepartmentTO(160, "Benefits"));
+        result.add(new DepartmentTO(170, "Manufacturing"));
+        result.add(new DepartmentTO(180, "Construction"));
+        result.add(new DepartmentTO(190, "Contracting"));
+        result.add(new DepartmentTO(200, "Operations"));
+        result.add(new DepartmentTO(210, "IT Support"));
+        result.add(new DepartmentTO(220, "NOC"));
+        result.add(new DepartmentTO(230, "IT Helpdesk"));
+        result.add(new DepartmentTO(240, "Government Sales"));
+        result.add(new DepartmentTO(250, "Retail Sales"));
+        result.add(new DepartmentTO(260, "Recruiting"));
+        result.add(new DepartmentTO(270, "Payroll"));
+        return result;
+    }
+
+    private List<DepartmentTO> expectedResult() {
         List<DepartmentTO> result = new ArrayList<>();
         result.add(new DepartmentTO(100, "Finance", 6));
         result.add(new DepartmentTO(140, "Control And Credit", 0));
