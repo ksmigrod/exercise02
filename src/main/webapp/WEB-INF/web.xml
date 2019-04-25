@@ -12,7 +12,7 @@
    <data-source>
      <name>java:app/env/HRDataSource</name>
      <class-name>oracle.jdbc.pool.OracleDataSource</class-name>
-     <url>jdbc:oracle:thin:hr/hr@localhost:1521:HR</url>
+     <url>jdbc:oracle:thin:hr/hr@localhost:1521:XE</url>
      <user>hr</user>
      <password>hr</password>
    </data-source>    

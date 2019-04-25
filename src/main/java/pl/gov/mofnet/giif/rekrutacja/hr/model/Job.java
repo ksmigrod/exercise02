@@ -1,80 +1,53 @@
 package pl.gov.mofnet.giif.rekrutacja.hr.model;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
-/**
- *
- * @author ksm
- */
 @Entity
-@Table(name = "JOBS", catalog = "", schema = "HR")
-@NamedQueries({
-    @NamedQuery(name = "Job.findAll", query = "SELECT j FROM Job j")})
-public class Job implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(name = "JOBS", schema = "HR")
+public class Job {
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "JOB_ID", nullable = false, length = 10)
-    private String job;
-    @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 35)
+    @Size(max = 10)
+    private String id;
+
+    @Basic
     @Column(name = "JOB_TITLE", nullable = false, length = 35)
-    private String jobTitle;
-    @Column(name = "MIN_SALARY")
+    @NotNull
+    @Size(max = 35)
+    private String title;
+
+    @Basic
+    @Column(name = "MIN_SALARY", nullable = true, precision = 6)
+    @Min(0)
+    @Max(999_999)
     private Integer minSalary;
-    @Column(name = "MAX_SALARY")
+
+    @Basic
+    @Column(name = "MAX_SALARY", nullable = true, precision = 6)
+    @Min(0)
+    @Max(999_999)
     private Integer maxSalary;
 
-    public Job() {
+    public String getId() {
+        return id;
     }
 
-    public Job(String jobId) {
-        this.job = jobId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public Job(String jobId, String jobTitle) {
-        this.job = jobId;
-        this.jobTitle = jobTitle;
+    public String getTitle() {
+        return title;
     }
 
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
-    public String getJobTitle() {
-        return jobTitle;
-    }
-
-    public void setJobTitle(String jobTitle) {
-        this.jobTitle = jobTitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getMinSalary() {
@@ -94,28 +67,28 @@ public class Job implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (job != null ? job.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Job job = (Job) o;
+        return Objects.equals(id, job.id) &&
+                Objects.equals(title, job.title) &&
+                Objects.equals(minSalary, job.minSalary) &&
+                Objects.equals(maxSalary, job.maxSalary);
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Job)) {
-            return false;
-        }
-        Job other = (Job) object;
-        if ((this.job == null && other.job != null) || (this.job != null && !this.job.equals(other.job))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, title, minSalary, maxSalary);
     }
 
     @Override
     public String toString() {
-        return "pl.gov.mofnet.giif.rekrutacja.hr.model.Job[ jobId=" + job + " ]";
+        return "Job{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", minSalary=" + minSalary +
+                ", maxSalary=" + maxSalary +
+                '}';
     }
-    
 }

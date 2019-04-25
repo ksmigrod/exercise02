@@ -1,104 +1,74 @@
 package pl.gov.mofnet.giif.rekrutacja.hr.model;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-import java.io.Serializable;
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.util.Collection;
+import java.sql.Time;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import java.util.Objects;
 
-/**
- *
- * @author ksm
- */
 @Entity
-@Table(name = "EMPLOYEES", catalog = "", schema = "HR", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"EMAIL"})})
-@NamedQueries({
-    @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e")})
-public class Employee implements Serializable {
+@Table(name = "EMPLOYEES", schema = "HR")
+public class Employee {
 
-    private static final long serialVersionUID = 1L;
+    @SequenceGenerator(name = "EmployeeSeqGen", sequenceName = "EMPLOYEES_SEQ", schema = "HR")
+    @GeneratedValue(generator = "EmployeeSeqGen", strategy = GenerationType.SEQUENCE)
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "EMPLOYEE_ID", nullable = false)
+    @Column(name = "EMPLOYEE_ID", nullable = false, precision = 6)
     private Integer id;
-    @Size(max = 20)
+
+    @Basic
     @Column(name = "FIRST_NAME", length = 20)
-    private String firstName;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 25)
-    @Column(name = "LAST_NAME", nullable = false, length = 25)
-    private String lastName;
-    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 25)
-    @Column(name = "EMAIL", nullable = false, length = 25)
-    private String email;
     @Size(max = 20)
-    @Column(name = "PHONE_NUMBER", length = 20)
-    private String phoneNumber;
-    @Basic(optional = false)
+    private String firstName;
+
+    @Basic
+    @Column(name = "LAST_NAME", nullable = false, length = 25)
     @NotNull
+    @Size(max = 25)
+    private String lastName;
+
+    @Basic
+    @Column(name = "EMAIL", nullable = false, length = 25)
+    @NotNull
+    @Size(max = 25)
+    private String email;
+
+    @Basic
+    @Column(name = "PHONE_NUMBER", length = 20)
+    @Size(max = 20)
+    private String phoneNumber;
+
+    @Basic
     @Column(name = "HIRE_DATE", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @Temporal(TemporalType.DATE)
     private Date hireDate;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
+    @Basic
     @Column(name = "SALARY", precision = 8, scale = 2)
+    @DecimalMin("0")
+    @DecimalMax(value = "1_000_000", inclusive = false)
     private BigDecimal salary;
+
+    @Basic
     @Column(name = "COMMISSION_PCT", precision = 2, scale = 2)
-    private BigDecimal commissionPct;
-    @JoinColumn(name = "DEPARTMENT_ID", referencedColumnName = "DEPARTMENT_ID")
+    @Min(0)
+    @Max(99)
+    private Short commissionPct;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    private Department department;
-    @OneToMany(mappedBy = "manager", fetch = FetchType.LAZY)
-    private Collection<Employee> subordinates;
     @JoinColumn(name = "MANAGER_ID", referencedColumnName = "EMPLOYEE_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
     private Employee manager;
-    @JoinColumn(name = "JOB_ID", referencedColumnName = "JOB_ID", nullable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DEPARTMENT_ID", referencedColumnName = "DEPARTMENT_ID")
+    private Department department;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "JOB_ID", nullable = false, referencedColumnName = "JOB_ID")
+    @NotNull
     private Job job;
-
-    public Employee() {
-    }
-
-    public Employee(Integer employeeId) {
-        this.id = employeeId;
-    }
-
-    public Employee(Integer employeeId, String lastName, String email, Date hireDate) {
-        this.id = employeeId;
-        this.lastName = lastName;
-        this.email = email;
-        this.hireDate = hireDate;
-    }
 
     public Integer getId() {
         return id;
@@ -156,28 +126,12 @@ public class Employee implements Serializable {
         this.salary = salary;
     }
 
-    public BigDecimal getCommissionPct() {
+    public Short getCommissionPct() {
         return commissionPct;
     }
 
-    public void setCommissionPct(BigDecimal commissionPct) {
+    public void setCommissionPct(Short commissionPct) {
         this.commissionPct = commissionPct;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Collection<Employee> getSubordinates() {
-        return subordinates;
-    }
-
-    public void setSubordinates(Collection<Employee> employeeCollection) {
-        this.subordinates = employeeCollection;
     }
 
     public Employee getManager() {
@@ -186,6 +140,14 @@ public class Employee implements Serializable {
 
     public void setManager(Employee manager) {
         this.manager = manager;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public Job getJob() {
@@ -197,28 +159,39 @@ public class Employee implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id &&
+                Objects.equals(firstName, employee.firstName) &&
+                Objects.equals(lastName, employee.lastName) &&
+                Objects.equals(email, employee.email) &&
+                Objects.equals(phoneNumber, employee.phoneNumber) &&
+                Objects.equals(hireDate, employee.hireDate) &&
+                Objects.equals(salary, employee.salary) &&
+                Objects.equals(commissionPct, employee.commissionPct);
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Employee)) {
-            return false;
-        }
-        Employee other = (Employee) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, email, phoneNumber, hireDate, salary, commissionPct);
     }
 
     @Override
     public String toString() {
-        return "pl.gov.mofnet.giif.rekrutacja.hr.model.Employee[ employeeId=" + id + " ]";
+        return "Employee{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", hireDate=" + hireDate +
+                ", salary=" + salary +
+                ", commissionPct=" + commissionPct +
+                ", manager=" + (manager == null ? " is null" : ".id=" + manager.getId()) +
+                ", department" + (department == null ? " is null" : ".id=" + department.getId())+
+                ", job" + (job == null ? " is null" : ".id=" + job.getId())+
+                '}';
     }
-    
 }

@@ -1,66 +1,33 @@
 package pl.gov.mofnet.giif.rekrutacja.hr.model;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.util.Objects;
 
-
-import java.io.Serializable;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-/**
- *
- * @author ksm
- */
 @Entity
-@Table(name = "DEPARTMENTS", catalog = "", schema = "HR")
-@NamedQueries({
-    @NamedQuery(name = "Department.findAll", query = "SELECT d FROM Department d")})
-public class Department implements Serializable {
+@Table(name = "DEPARTMENTS", schema = "HR")
+public class Department {
 
-    private static final long serialVersionUID = 1L;
+    @SequenceGenerator(name = "DepartmentSeqGen", sequenceName = "DEPARTMENTS_SEQ", schema = "HR")
+    @GeneratedValue(generator = "DepartmentSeqGen", strategy = GenerationType.SEQUENCE)
     @Id
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "DEPARTMENT_ID", nullable = false)
+    @Column(name = "DEPARTMENT_ID", nullable = false, precision = 4)
+    @Min(0)
+    @Max(9999L)
     private Short id;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 30)
+
+    @Basic
     @Column(name = "DEPARTMENT_NAME", nullable = false, length = 30)
     private String name;
-    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
-    private Collection<Employee> employees;
-    @JoinColumn(name = "MANAGER_ID", referencedColumnName = "EMPLOYEE_ID")
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MANAGER_ID", referencedColumnName = "EMPLOYEE_ID")
     private Employee manager;
 
-    public Department() {
-    }
-
-    public Department(Short departmentId) {
-        this.id = departmentId;
-    }
-
-    public Department(Short departmentId, String departmentName) {
-        this.id = departmentId;
-        this.name = departmentName;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID")
+    private Location location;
 
     public Short getId() {
         return id;
@@ -78,14 +45,6 @@ public class Department implements Serializable {
         this.name = name;
     }
 
-    public Collection<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(Collection<Employee> employees) {
-        this.employees = employees;
-    }
-
     public Employee getManager() {
         return manager;
     }
@@ -94,29 +53,35 @@ public class Department implements Serializable {
         this.manager = manager;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Department)) {
-            return false;
-        }
-        Department other = (Department) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Department that = (Department) o;
+        return id == that.id &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
-        return "pl.gov.mofnet.giif.rekrutacja.hr.model.Department[ departmentId=" + id + " ]";
+        return "Department{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", manager" + (manager == null ? " is null" : ".id=" + manager.getId()) +
+                ", location" + (location == null ? " is null" : ".id=" + location.getId()) +
+                '}';
     }
-    
 }

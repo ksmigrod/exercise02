@@ -1,54 +1,71 @@
 package pl.gov.mofnet.giif.rekrutacja.hr.services;
 
-import java.util.List;
-import javax.annotation.Generated;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.List;
 
-@Generated("NetBeans")
-public abstract class AbstractFacade<T> {
+public abstract class AbstractRepositoryImpl<E, PK> implements EntityRepository<E, PK> {
 
-    private Class<T> entityClass;
+    @PersistenceContext
+    private EntityManager em;
 
-    public AbstractFacade(Class<T> entityClass) {
+    private Class<E> entityClass;
+
+    public AbstractRepositoryImpl(Class<E> entityClass) {
         this.entityClass = entityClass;
     }
 
-    protected abstract EntityManager getEntityManager();
+    protected EntityManager getEntityManager() {
+        return em;
+    }
 
-    public void create(T entity) {
+    protected abstract PK getPrimaryKey(E entity);
+
+    @Override
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void create(E entity) {
         getEntityManager().persist(entity);
     }
 
-    public void edit(T entity) {
-        getEntityManager().merge(entity);
+    @Override
+    @Transactional(Transactional.TxType.REQUIRED)
+    public E edit(E entity) {
+        return getEntityManager().merge(entity);
     }
 
-    public void remove(T entity) {
+    @Override
+    @Transactional(Transactional.TxType.REQUIRED)
+    public void remove(E entity) {
         getEntityManager().remove(getEntityManager().merge(entity));
     }
 
-    public T find(Object id) {
+    @Override
+    public E find(PK id) {
         return getEntityManager().find(entityClass, id);
     }
 
-    public List<T> findAll() {
+    @Override
+    public List<E> findAll() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
         return getEntityManager().createQuery(cq).getResultList();
     }
 
-    public List<T> findRange(int[] range) {
+    @Override
+    public List<E> findRange(int first, int count) {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
         cq.select(cq.from(entityClass));
         javax.persistence.Query q = getEntityManager().createQuery(cq);
-        q.setMaxResults(range[1] - range[0] + 1);
-        q.setFirstResult(range[0]);
+        q.setFirstResult(first);
+        q.setMaxResults(count);
         return q.getResultList();
     }
 
+    @Override
     public int count() {
         javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        javax.persistence.criteria.Root<T> rt = cq.from(entityClass);
+        javax.persistence.criteria.Root<E> rt = cq.from(entityClass);
         cq.select(getEntityManager().getCriteriaBuilder().count(rt));
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();

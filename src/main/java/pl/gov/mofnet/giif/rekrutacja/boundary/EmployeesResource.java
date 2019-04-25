@@ -5,15 +5,16 @@
  */
 package pl.gov.mofnet.giif.rekrutacja.boundary;
 
-import java.util.List;
+import pl.gov.mofnet.giif.rekrutacja.controller.EmployeeService;
+import pl.gov.mofnet.giif.rekrutacja.hr.to.EmployeeTO;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import pl.gov.mofnet.giif.rekrutacja.hr.to.EmployeeTO;
-import pl.gov.mofnet.giif.rekrutacja.controller.EmployeeServiceLocal;
+import java.util.List;
 
 /**
  *
@@ -23,7 +24,8 @@ import pl.gov.mofnet.giif.rekrutacja.controller.EmployeeServiceLocal;
 @Path("employees")
 public class EmployeesResource {
     
-    @Inject EmployeeServiceLocal employeeService;
+    @Inject
+    EmployeeService employeeService;
     
     @GET
     @Produces({MediaType.APPLICATION_JSON})
