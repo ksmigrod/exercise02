@@ -25,6 +25,10 @@ public class DepartmentTO implements Serializable {
         this(Short.valueOf((short)id), name, null);
     }
 
+    public DepartmentTO(int id, String name, Integer employeeCount) {
+        this(Short.valueOf((short)id), name, employeeCount);
+    }
+
     public DepartmentTO(Short id, String name, Integer employeeCount) {
         this.id = id;
         this.name = name;
