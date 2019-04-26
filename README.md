@@ -3,13 +3,13 @@
 This application is designed to run against HR sample schema on Oracle Database,
 version 11gR2, Express Edition.
 
-This application provides `/hr/employees` web service, which returns some 
+This application provides `/exercise02/employees` web service, which returns some 
 data on employees.
 
 You task is to expand this application. 
 
 ## Functional requirements
-Please implement service `/hr/departments`.
+Please implement service `/exercise02/departments`.
 GET method on this endpoint must return JSON encoded array of departments.
 
  1. You will recieve thirty percent of points for this exercise
