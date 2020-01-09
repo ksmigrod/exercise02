@@ -1,37 +1,31 @@
 package pl.gov.mofnet.giif.rekrutacja.boundary;
 
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-//import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import pl.gov.mofnet.giif.rekrutacja.hr.model.Department;
 import pl.gov.mofnet.giif.rekrutacja.hr.to.DepartmentTO;
 import pl.gov.mofnet.giif.rekrutacja.hr.to.EmployeeTO;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
-import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.hamcrest.CoreMatchers.is;
+
+//import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 
 @RunWith(Arquillian.class)
 public class EmployeesResourceIT {
@@ -42,7 +36,7 @@ public class EmployeesResourceIT {
     public static WebArchive createDeployment() {
         return ShrinkWrap.create(WebArchive.class, "EmployeesResourceIT.war")
                 .addClasses(
-                        pl.gov.mofnet.giif.rekrutacja.boundary.ApplicationConfig.class,
+                        pl.gov.mofnet.giif.rekrutacja.boundary.employeesIT.ApplicationConfig.class,
                         pl.gov.mofnet.giif.rekrutacja.boundary.EmployeesResource.class
                 )
                 .addClasses(
